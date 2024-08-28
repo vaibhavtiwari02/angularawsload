@@ -1,38 +1,23 @@
 pipeline {
     agent any
+
     stages {
-        stage('Clone') {
+        stage('Clone Angular App') {
             steps {
-                // Clone the React app
-                git url: 'https://github.com/rikka-maj123/reactjsawsload.git'
-                
-                // Clone the Angular app
-                git url: 'https://github.com/rikka-maj123/angularawsload.git'
+                git 'https://github.com/rikka-maj123/angularawsload.git'
             }
         }
-        stage('Build') {
+        
+        stage('Build Angular App') {
             steps {
-                script {
-                    // Build React app
-                    dir('reactawsjenkins') {
-                        sh 'npm install'
-                        sh 'npm run build'
-                    }
-                    // Build Angular app
-                    dir('angularawsload') {
-                        sh 'npm install'
-                        sh 'ng build --prod'
-                    }
-                }
+                sh 'npm install'
+                sh 'ng build --configuration=production'
             }
         }
-        stage('Deploy') {
+        
+        stage('Deploy Angular App') {
             steps {
-                script {
-                    // Use SSH to copy files to the EC2 instance
-                    sh "scp -o StrictHostKeyChecking=no -r reactawsjenkins/build/* ubutnu@13.229.67.88:/var/www/react" // Replace with your EC2 public IP and path
-                    sh "scp -o StrictHostKeyChecking=no -r angularawsload/dist/* ubuntu@13.229.67.88:/var/www/angular" // Replace with your EC2 public IP and path
-                }
+                sh 'rsync -avz -e "ssh -i /home/jenkins/.ssh/id_rsa" /var/lib/jenkins/workspace/angular/dist/ ubuntu@your-angular-ec2-ip:/var/www/html/angular'
             }
         }
     }
