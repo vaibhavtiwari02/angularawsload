@@ -17,7 +17,7 @@ pipeline {
         
         stage('Deploy Angular App') {
             steps {
-                sh 'rsync -avz -e "ssh -i /home/jenkins/.ssh/id_rsa" /var/lib/jenkins/workspace/angular/dist/ ubuntu@your-angular-ec2-ip:/var/www/html/angular'
+                sh 'rsync -avz -e "ssh -i /home/jenkins/.ssh/id_rsa" /var/lib/jenkins/workspace/angular/dist/ ubuntu@13.215.160.125:/var/www/html/angular'
             }
         }
     }
